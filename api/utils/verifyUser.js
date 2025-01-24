@@ -8,10 +8,10 @@ export const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      console.error("JWT verification error:", err.message);
+      // console.error("JWT verification error:", err.message);
       return next(errorHandler(403, "Forbidden"));
     }
-    console.log("Decoded user from token:", user);
+    // console.log("Decoded user from token:", user);
     req.user = user;
     next();
   });
