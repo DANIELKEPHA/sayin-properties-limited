@@ -2,6 +2,10 @@ import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import Listing from "../models/listing.model.js";
+<<<<<<< HEAD
+=======
+// import Listing from "../models/listing.model.js";
+>>>>>>> 914b697e861b2ec02fc8e73267b989f7c3e6e2d9
 
 export const test = (req, res) => {
   res.json({
@@ -49,7 +53,10 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 914b697e861b2ec02fc8e73267b989f7c3e6e2d9
 export const getUserListings = async (req, res, next) => {
   if (req.user.id === req.params.id) {
     try {
@@ -62,6 +69,7 @@ export const getUserListings = async (req, res, next) => {
     return next(errorHandler(401, "You can only view your own listings!"));
   }
 };
+<<<<<<< HEAD
 
 export const getUser = async (req, res, next) => {
   try {
@@ -76,3 +84,5 @@ export const getUser = async (req, res, next) => {
     next(error);
   }
 };
+=======
+>>>>>>> 914b697e861b2ec02fc8e73267b989f7c3e6e2d9
