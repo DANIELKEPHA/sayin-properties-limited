@@ -28,10 +28,7 @@ export const deleteListing = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> 914b697e861b2ec02fc8e73267b989f7c3e6e2d9
 export const updateListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
   if (!listing) {
@@ -64,7 +61,6 @@ export const getListing = async (req, res, next) => {
     next(error);
   }
 };
-<<<<<<< HEAD
 
 export const getListings = async (req, res, next) => {
   try {
@@ -116,5 +112,3 @@ export const getListings = async (req, res, next) => {
     next(error);
   }
 };
-=======
->>>>>>> 914b697e861b2ec02fc8e73267b989f7c3e6e2d9
