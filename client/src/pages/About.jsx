@@ -119,22 +119,23 @@ export default function About() {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white shadow-lg rounded-lg p-6">
                 <p className="text-slate-700 italic mb-4">
-                  "Sayin Properties made the process of buying our dream home so
-                  easy and stress-free. Their team was professional,
-                  knowledgeable, and always available to answer our questions."
+                  &quot;Sayin Properties made the process of buying our dream
+                  home so easy and stress-free. Their team was professional,
+                  knowledgeable, and always available to answer our
+                  questions.&quot;
                 </p>
                 <h3 className="text-lg font-bold text-slate-800">
-                  - Daniel Kepha
+                  - Sayin Properties
                 </h3>
               </div>
               <div className="bg-white shadow-lg rounded-lg p-6">
                 <p className="text-slate-700 italic mb-4">
-                  "I highly recommend Sayin Properties to anyone looking to sell
-                  their home. They provided expert advice and helped us get the
-                  best possible price for our property."
+                  &quot;I highly recommend Sayin Properties to anyone looking to
+                  sell their home. They provided expert advice and helped us get
+                  the best possible price for our property.&quot;
                 </p>
                 <h3 className="text-lg font-bold text-slate-800">
-                  - Daniel Kepha
+                  - Sayin Properties
                 </h3>
               </div>
             </div>
