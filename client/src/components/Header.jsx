@@ -11,9 +11,10 @@ export default function Header() {
           <div className="font-bold text-sm sm:text-xl flex flex-wrap justify-center items-center space-x-2 cursor-pointer">
             <img
               className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16"
-              src="/src/assets/Sayin_logo.svg"
+              src="/Sayin_logo.svg"
               alt="logo"
             />
+
             <span className="text-gray-700">Sayin Properties</span>
           </div>
         </Link>
