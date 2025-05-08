@@ -1,4 +1,4 @@
-import { FaSearch } from "react-icons/fa";
+// import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -19,12 +19,12 @@ export default function Header() {
         </Link>
 
         <form className="bg-slate-100 p-2 rounded-lg flex items-center ">
-          <input
+          {/* <input
             className="bg-transparent focus:outline-none w-48 sm:w-64 md:w-80 lg:w-96 text-sm sm:text-base"
             type="text"
             placeholder="Search properties..."
           />
-          <FaSearch className="text-slate-600" />
+          <FaSearch className="text-slate-600" /> */}
         </form>
         <ul className="flex gap-4">
           <Link to="/">

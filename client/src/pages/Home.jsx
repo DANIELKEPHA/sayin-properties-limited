@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css/bundle";
 import ListingItem from "../components/ListingItem";
@@ -10,87 +10,142 @@ export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-  SwiperCore.use([Navigation]);
-  console.log(offerListings);
+  const [latestImages, setLatestImages] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const navigate = useNavigate();
+
+  SwiperCore.use([Navigation, Autoplay]);
+
   useEffect(() => {
-    const fetchOfferListings = async () => {
+    const fetchListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?offer=true&limit=4");
-        const data = await res.json();
-        setOfferListings(data);
-        fetchRentListings();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const fetchRentListings = async () => {
-      try {
-        const res = await fetch("/api/listing/get?type=rent&limit=4");
-        const data = await res.json();
-        setRentListings(data);
-        fetchSaleListings();
+        const fetchData = async (query) => {
+          const res = await fetch(query);
+          return await res.json();
+        };
+
+        const offers = await fetchData("/api/listing/get?offer=true&limit=4");
+        const sales = await fetchData("/api/listing/get?type=sale&limit=4");
+        const rents = await fetchData("/api/listing/get?type=rent&limit=4");
+
+        setOfferListings(offers);
+        setSaleListings(sales);
+        setRentListings(rents);
+
+        // Combine and sort listings
+        const allListings = [...offers, ...sales, ...rents];
+        allListings.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        // Extract latest images
+        const images = allListings
+          .filter(
+            (listing) => listing.imageUrls && listing.imageUrls.length > 0
+          )
+          .slice(0, 5)
+          .map((listing) => listing.imageUrls[0]);
+
+        setLatestImages(images);
       } catch (error) {
         console.log(error);
       }
     };
 
-    const fetchSaleListings = async () => {
-      try {
-        const res = await fetch("/api/listing/get?type=sale&limit=4");
-        const data = await res.json();
-        setSaleListings(data);
-      } catch (error) {
-        log(error);
-      }
-    };
-    fetchOfferListings();
+    fetchListings();
   }, []);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?query=${searchTerm}`);
+    }
+  };
+
   return (
     <div>
-      {/* top */}
-      <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
-        <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
-          Find your next <span className="text-slate-500">perfect</span>
-          <br />
-          place with ease
-        </h1>
-        <div className="text-gray-400 text-xs sm:text-sm">
-          Sayin Properties is the best place to find your next perfect place to
-          live.
-          <br />
-          We have a wide range of properties for you to choose from.
-        </div>
-        <Link
-          to={"/search"}
-          className="text-xs sm:text-sm text-blue-800 font-bold hover:underline"
+      {/* Hero Section */}
+      <div className="relative h-[500px]">
+        {/* Swiper for Background Images */}
+        <Swiper
+          navigation
+          modules={[Navigation, Autoplay]}
+          autoplay={{
+            delay: 60000, // 1 minute
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true, // Pause autoplay on hover
+          }}
+          className="absolute inset-0 z-0"
         >
-          Let's get started...
-        </Link>
-      </div>
-
-      {/* swiper */}
-      <Swiper navigation>
-        {offerListings &&
-          offerListings.length > 0 &&
-          offerListings.map((listing) => (
-            <SwiperSlide>
+          {latestImages.map((image, index) => (
+            <SwiperSlide key={index}>
               <div
                 style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                  background: `url(${image}) center no-repeat`,
                   backgroundSize: "cover",
                 }}
                 className="h-[500px]"
-                key={listing._id}
               ></div>
             </SwiperSlide>
           ))}
-      </Swiper>
+        </Swiper>
 
-      {/* listing results for offer, sale and rent */}
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
 
+        {/* Hero Content */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-20 p-4">
+          <h1 className="text-4xl lg:text-6xl font-bold text-center mb-4">
+            Find Your Dream Home
+          </h1>
+          <p className="text-lg lg:text-xl text-center mb-8">
+            Discover the perfect place to live with our wide range of
+            properties.
+          </p>
+
+          {/* Search Bar */}
+          <div className="w-full max-w-3xl">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="flex flex-col md:flex-row gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter city, neighborhood..."
+                  className="flex-grow p-3 bg-black/30 backdrop-blur-sm border border-gray-600 rounded focus:outline-none focus:border-blue-400 text-white placeholder-gray-300"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-600/90 hover:bg-blue-700 text-white px-6 py-3 rounded transition-colors font-medium shadow-md hover:shadow-lg"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Call-to-Action Buttons */}
+          <div className="flex gap-4 mt-8">
+            <Link
+              to="/search?type=sale"
+              className="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Buy
+            </Link>
+            <Link
+              to="/search?type=rent"
+              className="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Rent
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Listing Results for Offer, Sale, and Rent */}
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {offerListings && offerListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent offers
@@ -110,7 +165,7 @@ export default function Home() {
           </div>
         )}
         {rentListings && rentListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent places for rent
@@ -130,7 +185,7 @@ export default function Home() {
           </div>
         )}
         {saleListings && saleListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent places for sale
